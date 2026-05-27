@@ -5,6 +5,18 @@ import { motion } from "motion/react";
 import { FcGoogle } from "react-icons/fc";
 
 function Auth() {
+
+    const handleGoogleAuth = async () => {
+        try {
+            const response = await fetch("/api/auth/google");
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error("Error during Google authentication:", error);
+        }
+    }
+
+
     return (
         <div className="w-full min-h-screen bg-[#f3f3f3] flex items-center justify-center px-6 py-20">
             {/* Auth  me hu abhi toh..... */}
@@ -37,6 +49,7 @@ function Auth() {
                 </p>
 
                 <motion.button
+                    onClick={handleGoogleAuth}
                     whileHover={{ opacity: 0.85, scale: 1.02 }}
                     whileTap={{ scale: 0.99 }}
                     className="w-full flex item-center justify-center gap-3  py-3 bg-black text-white rounded-full shadow-md">

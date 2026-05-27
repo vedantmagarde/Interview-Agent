@@ -1,4 +1,28 @@
+# =========================
+# Dependencies
+# =========================
+node_modules/
+
+# =========================
+# Build output
+# =========================
+dist/
+dist-ssr/
+build/
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# Firebase / local configs
+*.local
+
+# =========================
 # Logs
+# =========================
 logs
 *.log
 npm-debug.log*
@@ -7,18 +31,39 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+# =========================
+# Editor / IDE files
+# =========================
 .vscode/*
 !.vscode/extensions.json
-.idea
+
+.idea/
 .DS_Store
+
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# =========================
+# OS generated files
+# =========================
+Thumbs.db
+
+# =========================
+# Cache files
+# =========================
+.cache/
+.parcel-cache/
+.eslintcache
+
+# =========================
+# Testing
+# =========================
+coverage/
+
+# =========================
+# Vite
+# =========================
+vite.svg
