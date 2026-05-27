@@ -3,14 +3,15 @@ import { BsRobot } from "react-icons/bs";
 import { PiSparkleDuotone } from "react-icons/pi";
 import { motion } from "motion/react";
 import { FcGoogle } from "react-icons/fc";
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../utils/firebase";
 
 function Auth() {
 
     const handleGoogleAuth = async () => {
         try {
-            const response = await fetch("/api/auth/google");
-            const data = await response.json();
-            console.log(data);
+            const response =await signInWithPopup(auth,provider);
+            console.log(response);
         } catch (error) {
             console.error("Error during Google authentication:", error);
         }
