@@ -2,10 +2,10 @@ import React from "react";
 
 function Home() {
     return (
-        <div>
-            Home accha hai....
+        <div className="min-h-screen bg-[#f3f3f3] flex flex-col">
+        <Navbar />
         </div>
     )
 }
 
-export default Home;
+export default Home; 
