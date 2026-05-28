@@ -4,6 +4,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
+
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
     authDomain: "interview-agent-6b647.firebaseapp.com",
