@@ -1,0 +1,35 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { RxCrossCircled } from "react-icons/rx";
+import Auth from '../pages/Auth';
+
+function AuthModel({ onClose }) {
+
+    const { userData } = useSelector((state) => state.user);
+
+    useEffect(() => {
+        if (userData) {
+            onClose();
+        }
+    }, [userData, onClose]);
+
+    return (
+        <div className='fixed inset-0 z-[999] flex items-center  justify-center bg-black/10 backdrop-blur-sm px-4'>
+
+            <div className='realtive w-full max-w-md '>
+
+
+                <button
+                    className='abssolute top-8 right-5 text-gray-800 hover:text-black text-xl'
+                    onClick={onClose}>
+                    <RxCrossCircled size={19} />
+                </button>
+                <Auth isModel={true} />
+            </div>
+
+        </div>
+    )
+}
+
+export default AuthModel;
