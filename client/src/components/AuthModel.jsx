@@ -22,9 +22,9 @@ function AuthModel({ onClose }) {
 
 
                 <button
-                    className='abssolute top-8 right-5 text-gray-800 hover:text-black text-xl'
+                    className='absolute top-8 right-5 text-gray-800 hover:text-black text-xl'
                     onClick={onClose}>
-                    <RxCrossCircled size={19} />
+                    <RxCrossCircled size={25} />
                 </button>
                 <Auth isModel={true} />
             </div>
