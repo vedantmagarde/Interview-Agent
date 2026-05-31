@@ -20,7 +20,7 @@ function App() {
       try {
         const result = await axios.get(ServerUrl + "/api/user/current-user", { withCredentials: true });
         // console.log(result.data);
-        dispatch(setUserData(result.data));
+        dispatch(setUserData(result.data.user));
       }
       catch (error) {
         console.log("Status:", error.response?.status);

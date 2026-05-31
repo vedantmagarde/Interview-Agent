@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { RxCrossCircled } from "react-icons/rx";
 import Auth from '../pages/Auth';
 
+
 function AuthModel({ onClose }) {
 
     const { userData } = useSelector((state) => state.user);

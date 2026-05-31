@@ -11,6 +11,7 @@ import { ServerUrl } from '../App';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice.js';
 import { useState } from 'react';
+import AuthModel from './AuthModel.jsx';
 
 
 function Navbar() {
@@ -22,7 +23,7 @@ function Navbar() {
     const dispatch = useDispatch();
     const [showAuth, setShowAuth] = useState(false);
 
-    const handleLogout = async => {
+    const handleLogout = async () => {
         try {
             await axios.get(ServerUrl + "/api/auth/logout", { withCredentials: true });
             dispatch(setUserData(null));
@@ -77,7 +78,7 @@ function Navbar() {
                         {showCreditPopup && (
                             <div className='absolute right-[-50px] mt-3 w-64 bg-white shadow-xl border border-gray-200 rounded p-5 z-50'>
 
-                                <p className='text-sm text-gray-600 mb4'>Need more credits to continue Interviews.</p>
+                                <p className='text-sm text-gray-600 mb4 py-2'>Need more credits to continue Interviews.</p>
                                 <button
                                     onClick={() => {
                                         navigate("/pricing");
@@ -105,14 +106,14 @@ function Navbar() {
                             className='w-9 h-9 bg-black text-white rounded-full flex items-center justify-center 
                         font-semibold'>
 
-                            {userData ? userData?.name.charAt(0)?.toUpperCase() : <FaRegUser size={16} />}
+                            {userData?.name ? userData.name.charAt(0).toUpperCase() : <FaRegUser size={16} />}
 
                         </button>
 
                         {showUserPopup && (
                             <div className='absolute right-0 mt-3 w-48 bg-white shadow-xl border border-gray-200 rounded-xl p-4 z-50'>
 
-                                <p className='text-md text-blue-500 font-medium  mb-1'>Welcome, {userData?.name || 'User'}</p>
+                                <p className='text-md text-blue-500 font-medium  mb-1'>{userData?.name || 'User'}</p>
 
                                 {/* Interview History Button */}
                                 <button
@@ -125,11 +126,10 @@ function Navbar() {
 
                                 {/* Log out Button */}
                                 <button
-                                    onClick={handleLogout()}
+                                    onClick={handleLogout}
                                     className='w-full text-left text-sm py-2 flex items-center gap-2 text-red-500'>
                                     <LuLogOut size={16} />
                                     Log Out
-                                    {handleLogout()};
                                 </button>
                             </div>
                         )}
