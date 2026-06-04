@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { FaUserTie, FaMicrophoneAlt, FaChartLine, FaBriefcase, FaFile, FaFileUpload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
+import { ServerUrl } from "../config";
 
 function Step1SetUp({ onStart }) {
 
@@ -17,6 +19,33 @@ function Step1SetUp({ onStart }) {
     const [resumeText, setResumeText] = useState("");
     const [analysisDone, setAnalysisDone] = useState(false);
     const [analyzing, setAnalyzing] = useState(false);
+
+
+
+    const handleUploadResume = async () => {
+        if (!resumeFile || analyzing) return;
+        setAnalyzing(true);
+
+        const formData = new FormData();
+        formData.append("resume", resumeFile);
+        try {
+            const result = await axios.post(ServerUrl + "/api/interview/resume", formData, { withCredentials: true });
+
+            console.log("Resume analysis result:", result.data);
+            setRole(result.data.role || "");
+            setExperience(result.data.experience || "");
+            setProjects(result.data.projects || []);
+            setSkills(result.data.skills || []);
+            setResumeText(result.data.text || "");
+            setAnalysisDone(true);
+
+            setAnalyzing(false);
+
+        } catch (error) {
+            console.error("Error uploading resume:", error);
+            setAnalyzing(false);
+        }
+    }
 
 
     return (
@@ -110,7 +139,7 @@ function Step1SetUp({ onStart }) {
                         </select>
 
 
-                        {!analysisDone && <motion.div
+                        {!analysisDone && (<motion.div
                             whileHover={{ scale: 1.03 }} onClick={() => document.getElementById('resumeUpload').click()} className="border-2 border-dashed border-gray-400 rounded-xl p-8 text-center cursor-pointer hover:bg-green-500 hover:text-green-50 transition">
 
                             <FaFileUpload className="text-4xl mx-auto text-green-600 mb-3 " />
@@ -121,14 +150,16 @@ function Step1SetUp({ onStart }) {
                                 resumeFile ? resumeFile.name : "Click to upload your resume - PDF (optional)"
                             }</p>
 
-                            {resumeFile && <motion.button
+                            {resumeFile && (<motion.button
                                 whileHover={{ scale: 1.05 }}
-                                onClick={() => { }}
+                                onClick={(e) => {
+                                    e.stopPropagation(); handleUploadResume();
+                                }}
                                 className="mt-4 bg-gray-700 text-white py-2 px-6 rounded-lg hover:bg-gray-760 transition">
                                 {analyzing ? "Analyzing..." : "Analyze Resume"}
-                            </motion.button>}
+                            </motion.button>)}
 
-                        </motion.div>}
+                        </motion.div>)}
 
 
                         <motion.button
