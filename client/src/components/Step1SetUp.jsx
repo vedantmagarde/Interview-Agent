@@ -1,7 +1,24 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { FaUserTie, FaMicrophoneAlt, FaChartLine, FaBriefcase, FaFile, FaFileUpload } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function Step1SetUp({ onStart }) {
+
+    const [role, setRole] = React.useState("");
+    const [experience, setExperience] = React.useState("");
+    const [mode, setMode] = React.useState("Technical");
+
+    const { resumeFile, setResumeFile } = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [projects, setProjects] = useState([]);
+    const [skills, setSkills] = useState([]);
+    const [resumeText, setResumeText] = useState("");
+    const [analysisDone, setAnalysisDone] = useState(false);
+    const [analyzing, setAnalyzing] = useState(false);
+
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -27,16 +44,106 @@ function Step1SetUp({ onStart }) {
                     </p>
 
 
+                    <div className="space-y-5">
+                        {
+                            [
+                                {
+                                    icon: <FaUserTie className="text-green-600 text-xl" />,
+                                    text: "Choose your role and Experience"
+                                },
+                                {
+                                    icon: <FaMicrophoneAlt className="text-green-600 text" />,
+                                    text: "Smart Voice Interview"
+                                },
+                                {
+                                    icon: <FaChartLine className="text-green-600 text" />,
+                                    text: "Performance Analytics"
+                                }
+                            ].map((item, index) => (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 30 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.3 + index * 0.1 }}
+                                    whileHover={{ scale: 1.02 }}
+                                    key={index}
+                                    className="flex items-center space-x-4 bg-white p-4 rounded-xl shadow-sm cursor-pointer"
+                                >
+                                    {item.icon}
+                                    <span className="text-gray-700 font-medium">{item.text}</span>
+                                </motion.div>
+                            ))}
+                    </div>
+
+
                 </motion.div>
 
+                {/* Right side wala*/}
                 <motion.div
-                    initial={{ x: 100, opacity: 0 }}
+                    initial={{ x: 90, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ duration: 0.5 }}
-                >
-                    <p className="text-lg text-gray-600">
-                        Get ready to ace your next interview with our comprehensive preparation tools.
-                    </p>
+                    className="p-12 bg-white">
+
+                    <h2 className="text-3xl font-bold text-gray-800 mb-8">Set Up Your Interview</h2>
+
+                    <div className="space-y-6">
+                        <div className="relative">
+                            <FaUserTie className="absolute top-4 left-4 text-gray-400" />
+                            <input type='text' placeholder="Enter your role" className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl   focus:ring-2 focus:ring-green-500 outline-none transition"
+                                onChange={(e) => setRole(e.target.value)} value={role}
+                            />
+                        </div>
+
+                        <div className="relative">
+                            <FaBriefcase className="absolute top-4 left-4 text-gray-400" />
+                            <input type='text' placeholder="Enter your Experience (e.g., 2 years)" className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl   focus:ring-2 focus:ring-green-500 outline-none transition"
+                                onChange={(e) => setExperience(e.target.value)} value={experience}
+                            />
+
+                        </div>
+                        <select value={mode}
+                            onChange={(e) => setMode(e.target.value)}
+                            className="w-full py-3 px-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition">
+
+                            <option value="Technical">Technical Interview</option>
+                            <option value="HR">HR Interview</option>
+                        </select>
+
+
+                        {!analysisDone && <motion.div
+                            whileHover={{ scale: 1.03 }} onClick={() => document.getElementById('resumeUpload').click()} className="border-2 border-dashed border-gray-400 rounded-xl p-8 text-center cursor-pointer hover:bg-green-500 hover:text-green-50 transition">
+
+                            <FaFileUpload className="text-4xl mx-auto text-green-600 mb-3 " />
+
+                            {/* For resume upload */}
+                            <input type="file" accept=".pdf" className="hidden" id="resumeUpload" onChange={(e) => setResumeFile(e.target.files[0])} />
+                            <p className="text-gray-500 font-medium">{
+                                resumeFile ? resumeFile.name : "Click to upload your resume - PDF (optional)"
+                            }</p>
+
+                            {resumeFile && <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                onClick={() => { }}
+                                className="mt-4 bg-gray-700 text-white py-2 px-6 rounded-lg hover:bg-gray-760 transition">
+                                {analyzing ? "Analyzing..." : "Analyze Resume"}
+                            </motion.button>}
+
+                        </motion.div>}
+
+
+                        <motion.button
+                            disabled={!role || !experience}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.93 }}
+                            onClick={() => onStart({ role, experience, mode })}
+                            className="w-full disabled:bg-gray-600  bg-green-600 hover:bg-green-700 text-white py-3 rounded-full text-lg font-semibold  transition duration-300 shadow-md"
+                        >
+                            Start Interview
+                        </motion.button>
+
+                    </div>
+
+
                 </motion.div>
             </div>
 
