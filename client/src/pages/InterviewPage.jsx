@@ -7,7 +7,7 @@ import Footer from "../components/Footer.jsx";
 import { useNavigate } from "react-router-dom";
 
 
-function InterviewPage({ interviewData, onFinish }) {
+function InterviewPage() {
 
     const [step, setStep] = React.useState(1);
     const [interviewData, setInterviewData] = useState(null);

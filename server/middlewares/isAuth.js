@@ -5,9 +5,9 @@ const isAuth = async (req, res, next) => {
 
         let { token } = req.cookies;
 
-        console.log(req.cookies);
-        console.log(typeof token);
-        console.log(token);
+        // console.log(req.cookies);
+        // console.log(typeof token);
+        // console.log(token);
 
         if (!token) {
             return res.status(401).json({ message: "User not authorized." });

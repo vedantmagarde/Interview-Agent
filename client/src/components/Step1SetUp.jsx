@@ -4,7 +4,7 @@ import { FaUserTie, FaMicrophoneAlt, FaChartLine, FaBriefcase, FaFile, FaFileUpl
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import { ServerUrl } from "../config";
+import { ServerUrl } from "../App.jsx";
 
 function Step1SetUp({ onStart }) {
 
@@ -12,7 +12,7 @@ function Step1SetUp({ onStart }) {
     const [experience, setExperience] = React.useState("");
     const [mode, setMode] = React.useState("Technical");
 
-    const { resumeFile, setResumeFile } = useState(null);
+    const [resumeFile, setResumeFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [projects, setProjects] = useState([]);
     const [skills, setSkills] = useState([]);
@@ -155,11 +155,52 @@ function Step1SetUp({ onStart }) {
                                 onClick={(e) => {
                                     e.stopPropagation(); handleUploadResume();
                                 }}
-                                className="mt-4 bg-gray-700 text-white py-2 px-6 rounded-lg hover:bg-gray-760 transition">
+                                className="mt-4 bg-gray-700 text-white py-2 px-6 rounded-lg hover:bg-gray-700 transition">
                                 {analyzing ? "Analyzing..." : "Analyze Resume"}
                             </motion.button>)}
 
                         </motion.div>)}
+
+
+
+                        {analysisDone && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="bg-gray-50 border border-gray-200 p-5 rounded-xl space-y-4">
+                                <h3 className="text-lg font-semibold text-gray-800 ">Resume Analysis Results!</h3>
+
+                                {/* Project List */}
+                                {projects.length > 0 && (
+                                    <div>
+                                        <p className="font-medium text-gray-700 mb-1">
+                                            Projects:</p>
+                                        <ul className="list-disc list-inside text-gray-600 space-y-1">
+                                            {projects.map((proj, idx) => (
+                                                <li key={idx}>{proj}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+
+
+                                {/* Skills List */}
+                                {skills.length > 0 && (
+                                    <div>
+                                        <p className="font-medium text-gray-700 mb-1">
+                                            Skills:</p>
+                                        <div className="flex flex-wrap gap-2 ">
+                                            {skills.map((skill, idx) => (
+                                                <span key={idx} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                                                    {skill}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </motion.div>
+                        )}
+
 
 
                         <motion.button

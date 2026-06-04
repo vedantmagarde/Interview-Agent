@@ -1,9 +1,13 @@
 import fs from 'fs';
 import * as  pdfjslib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { askAI } from "../services/openRouter.service.js";
+import { askAi } from "../services/openRouter.service.js";
 
 
 export const analyzeResume = async (req, res) => {
+
+    // console.log("Resume endpoint hit");
+    // console.log("File:", req.file);
+
     try {
         if (!req.file) {
             return res.status(400).json({ error: "No Resume uploaded" });
@@ -55,7 +59,7 @@ Return strictly JSON:
         ];
 
 
-        const aiResponse = await askAI(messages);
+        const aiResponse = await askAi({messages});
 
         const parsed = JSON.parse(aiResponse);
 
