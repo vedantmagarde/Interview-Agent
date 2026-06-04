@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const askAi = async ({ messages }) => {
+export const askAi = async (messages ) => {
     try {
         if (!messages || messages.length === 0 || !Array.isArray(messages)) {
             throw new Error("Messages  array is empty.");
