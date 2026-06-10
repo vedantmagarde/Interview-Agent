@@ -124,10 +124,11 @@ function Step2Interview({ interviewData, onFinish }) {
                 setIsAIPlaying(false);
 
 
-
                 if (isMicOn) {
                     startMic();
                 }
+
+
                 setTimeout(() => {
                     setSubtitle("");
                     resolve();
@@ -163,7 +164,7 @@ function Step2Interview({ interviewData, onFinish }) {
 
             } else if (currentQuestion) {
 
-                await new Promise(r => setTimeout(r, 800));
+                await new Promise(r => setTimeout(r, 900));
 
                 // If last question (hard level)
                 if (currentIndex === questions.length - 1) {
@@ -172,6 +173,7 @@ function Step2Interview({ interviewData, onFinish }) {
 
                 // quesstion bolna shuru....
                 await speakText(currentQuestion.question);
+
 
                 if (isMicOn) {
                     startMic();
@@ -184,6 +186,138 @@ function Step2Interview({ interviewData, onFinish }) {
 
     }, [selectedVoice, isIntroPhase, currentIndex])
 
+
+
+
+    // for timer section to reduce
+    useEffect(() => {
+        if (isIntroPhase) return;
+        if (!currentQuestion) return;
+
+        const timer = setInterval(() => {
+            setTimeLeft((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer)
+                    return 0;
+                }
+                return prev - 1;
+
+            })
+        }, 1000);
+
+        return () => clearInterval(timer)
+
+    }, [isIntroPhase, currentIndex])
+
+
+
+    // voice to text  
+    useEffect(() => {
+        if (!("webkitSpeechRecognition" in window)) return;
+
+        const recognition = new window.webkitSpeechRecognition();
+        recognition.lang = "en-US";
+        recognition.continuous = true;
+        recognition.interimResults = false;
+
+        recognition.onresult = (event) => {
+            const transcript =
+                event.results[event.results.length - 1][0].transcript;
+
+            setAnswer((prev) => prev + " " + transcript);
+        };
+
+        recognitionRef.current = recognition;
+
+    }, []);
+
+
+
+
+
+    const startMic = () => {
+        if (recognitionRef.current && !isAIPlaying) {
+            try {
+                recognitionRef.current.start();
+            } catch { }
+        }
+    };
+    const stopMic = () => {
+        if (recognitionRef.current) {
+            recognitionRef.current.stop();
+        }
+    };
+    const toggleMic = () => {
+        if (isMicOn) {
+            stopMic();
+        } else {
+            startMic();
+        }
+        setIsMicOn(!isMicOn);
+    };
+
+
+
+
+    const submitAnswer = async () => {
+        if (isSubmitting) return;
+        stopMic()
+        setIsSubmitting(true)
+
+        try {
+            const result = await axios.post(ServerUrl + "/api/interview/submit-answer", {
+                interviewId,
+                questionIndex: currentIndex,
+                answer,
+                timeTaken:
+                    currentQuestion.timeLimit - timeLeft,
+            }, { withCredentials: true })
+
+            setFeedback(result.data.feedback)
+            speakText(result.data.feedback)
+            setIsSubmitting(false)
+        } catch (error) {
+            console.log(error)
+            setIsSubmitting(false)
+        }
+    }
+
+
+
+
+    const handleNext = async () => {
+        setAnswer("");
+        setFeedback("");
+
+        if (currentIndex + 1 >= questions.length) {
+            finishInterview();
+            return;
+        }
+
+        await speakText("Alright, let's move to the next question.");
+
+        setCurrentIndex(currentIndex + 1);
+        setTimeout(() => {
+            if (isMicOn) startMic();
+        }, 500);
+
+    }
+
+
+
+
+    const finishInterview = async () => {
+        stopMic()
+        setIsMicOn(false)
+        try {
+            const result = await axios.post(ServerUrl + "/api/interview/finish", { interviewId }, { withCredentials: true })
+
+            console.log(result.data)
+            onFinish(result.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
 
 
@@ -312,11 +446,11 @@ function Step2Interview({ interviewData, onFinish }) {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 className='mt-6 bg-emerald-50 border border-emerald-200 p-5 rounded-2xl shadow-sm'>
+
                                 <p className='text-emerald-700 font-medium mb-4'>{feedback}</p>
 
                                 <button
                                     onClick={handleNext}
-
                                     className='w-full bg-gradient-to-r from-emerald-600 to-teal-500 text-white py-3 rounded-xl shadow-md hover:opacity-90 transition flex items-center justify-center gap-1'>
                                     Next Question <BsArrowRight size={18} />
                                 </button>
