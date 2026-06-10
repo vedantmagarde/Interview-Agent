@@ -5,13 +5,14 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 
+
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
-    authDomain: "interview-agent-6b647.firebaseapp.com",
-    projectId: "interview-agent-6b647",
-    storageBucket: "interview-agent-6b647.firebasestorage.app",
-    messagingSenderId: "306469722397",
-    appId: "1:306469722397:web:fcb1e2ff2138f84a3429f4"
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 
