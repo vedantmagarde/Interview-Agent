@@ -211,6 +211,15 @@ function Step2Interview({ interviewData, onFinish }) {
 
 
 
+    useEffect(() => {
+        if (!isIntroPhase && currentQuestion) {
+            setTimeLeft(currentQuestion.timeLimit || 60);
+        }
+    }, [currentIndex]);
+
+
+
+
     // voice to text  
     useEffect(() => {
         if (!("webkitSpeechRecognition" in window)) return;
@@ -318,6 +327,33 @@ function Step2Interview({ interviewData, onFinish }) {
             console.log(error)
         }
     }
+
+
+
+
+
+    useEffect(() => {
+        if (isIntroPhase) return;
+        if (!currentQuestion) return;
+
+        if (timeLeft === 0 && !isSubmitting && !feedback) {
+            submitAnswer()
+        }
+    }, [timeLeft]);
+
+
+
+
+    useEffect(() => {
+        return () => {
+            if (recognitionRef.current) {
+                recognitionRef.current.stop();
+                recognitionRef.current.abort();
+            }
+
+            window.speechSynthesis.cancel();
+        };
+    }, []);
 
 
 
