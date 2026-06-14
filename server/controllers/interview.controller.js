@@ -412,7 +412,7 @@ export const finishInterview = async (req, res) => {
                 correctness: ques.correctness || 0,
             }))
         });
-    } catch {
+    } catch (error) {
         return res.status(500).json({
             message: `Failed to finish Interview ${error}`
         });
