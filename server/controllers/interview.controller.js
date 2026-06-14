@@ -260,7 +260,7 @@ export const submitAnswer = async (req, res) => {
 
 
         //if time exceeds
-        if (timeTaken > questions.timeLimit) {
+        if (timeTaken > question.timeLimit) {
             question.score = 0;
             question.feedback = "Time limit exceeded,response not evaluated."
             question.answer = answer;
@@ -398,7 +398,7 @@ export const finishInterview = async (req, res) => {
 
         await interview.save();
 
-        return requestAnimationFrame.status(200).json({
+        return res.status(200).json({
             finalScore: Number(finalScore.toFixed(1)),
             confidence: Number(avgConfidence.toFixed(1)),
             communication: Number(avgCommunication.toFixed(1)),

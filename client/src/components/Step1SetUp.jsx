@@ -58,7 +58,11 @@ function Step1SetUp({ onStart }) {
 
         setLoading(true);
         try {
-            const result = await axios.post(ServerUrl + "/api/interview/generate-questions", { role, experience, mode, resumeText, projects, skills }, withCredentials(true));
+            const result = await axios.post(
+                ServerUrl + "/api/interview/generate-questions",
+                { role, experience, mode, resumeText, projects, skills },
+                { withCredentials: true }
+            );
 
             if (userData) {
                 dispatch(setUserData({ ...userData, credits: result.data.creditsLeft }))
@@ -108,11 +112,11 @@ function Step1SetUp({ onStart }) {
                                     text: "Choose your role and Experience"
                                 },
                                 {
-                                    icon: <FaMicrophoneAlt className="text-green-600 text" />,
+                                    icon: <FaMicrophoneAlt className="text-green-600 text-xl" />,
                                     text: "Smart Voice Interview"
                                 },
                                 {
-                                    icon: <FaChartLine className="text-green-600 text" />,
+                                    icon: <FaChartLine className="text-green-600 text-xl" />,
                                     text: "Performance Analytics"
                                 }
                             ].map((item, index) => (
