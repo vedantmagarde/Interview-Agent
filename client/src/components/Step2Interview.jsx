@@ -36,6 +36,14 @@ function Step2Interview({ interviewData, onFinish }) {
     const currentQuestion = questions[currentIndex];
 
 
+    const lastFinalTranscriptRef = useRef("");   // ADD THIS
+    const restartTimerRef = useRef(null);
+
+
+    const isMicOnRef = useRef(isMicOn);
+
+
+
     useEffect(() => {
         const loadVoices = () => {
             // Text to voice....
@@ -189,6 +197,15 @@ function Step2Interview({ interviewData, onFinish }) {
 
 
 
+
+
+    useEffect(() => {
+        isMicOnRef.current = isMicOn;
+    }, [isMicOn]);
+
+
+
+
     // for timer section to reduce
     useEffect(() => {
         if (isIntroPhase) return;
@@ -220,50 +237,132 @@ function Step2Interview({ interviewData, onFinish }) {
 
 
 
-    // voice to text  
-    useEffect(() => {
-        if (!("webkitSpeechRecognition" in window)) return;
+    //     // voice to text  
+    // useEffect(() => {
+    //     if (!("webkitSpeechRecognition" in window)) return;
 
-        const recognition = new window.webkitSpeechRecognition();
+    //     const recognition = new window.webkitSpeechRecognition();
+    //     recognition.lang = "en-US";
+    //     recognition.continuous = true;
+    //     recognition.interimResults = false;
+
+    //     recognition.onresult = (event) => {
+    //         const transcript =
+    //             event.results[event.results.length - 1][0].transcript;
+
+    //         setAnswer((prev) => prev + " " + transcript);
+    //     };
+
+    //     recognitionRef.current = recognition;
+
+    // }, []);
+
+
+
+
+
+
+
+
+    // voice to text
+    useEffect(() => {
+        const isListeningRef = isMicOn;
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) return;
+
+        const recognition = new SpeechRecognition();
         recognition.lang = "en-US";
-        recognition.continuous = true;
+        recognition.continuous = false;
         recognition.interimResults = false;
 
         recognition.onresult = (event) => {
-            const transcript =
-                event.results[event.results.length - 1][0].transcript;
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                if (!event.results[i].isFinal) continue;
 
-            setAnswer((prev) => prev + " " + transcript);
+                const transcript = event.results[i][0].transcript.trim();
+                if (!transcript) continue;
+                if (transcript === lastFinalTranscriptRef.current) continue;
+
+                lastFinalTranscriptRef.current = transcript;
+                setAnswer((prev) => {
+                    const trimmed = prev.trim();
+                    return trimmed ? trimmed + " " + transcript : transcript;
+                });
+            }
+        };
+
+        recognition.onend = () => {
+            if (isMicOnRef.current) {
+                restartTimerRef.current = setTimeout(() => {
+                    lastFinalTranscriptRef.current = "";
+                    try { recognition.start(); } catch (e) { }
+                }, 200);
+            }
+        };
+
+        recognition.onerror = (event) => {
+            if (event.error === "no-speech" || event.error === "aborted") return;
+            console.error("Speech error:", event.error);
         };
 
         recognitionRef.current = recognition;
 
+        return () => {
+            clearTimeout(restartTimerRef.current);
+            recognition.abort();
+        };
     }, []);
 
 
 
 
+    
+    // Start/stop mic based on isMicOn
+    useEffect(() => {
+        const recognition = recognitionRef.current;
+        if (!recognition) return;
 
-    const startMic = () => {
-        if (recognitionRef.current && !isAIPlaying) {
-            try {
-                recognitionRef.current.start();
-            } catch { }
-        }
-    };
-    const stopMic = () => {
-        if (recognitionRef.current) {
-            recognitionRef.current.stop();
-        }
-    };
-    const toggleMic = () => {
         if (isMicOn) {
-            stopMic();
+            lastFinalTranscriptRef.current = "";
+            try { recognition.start(); } catch (e) { }
         } else {
-            startMic();
+            clearTimeout(restartTimerRef.current);
+            recognition.abort();
         }
-        setIsMicOn(!isMicOn);
-    };
+    }, [isMicOn]);
+
+
+
+
+
+
+
+
+
+    // const startMic = () => {
+    //     if (recognitionRef.current && !isAIPlaying) {
+    //         try {
+    //             recognitionRef.current.start();
+    //         } catch { }
+    //     }
+    // };
+    // const stopMic = () => {
+    //     if (recognitionRef.current) {
+    //         recognitionRef.current.stop();
+    //     }
+    // };
+    // const toggleMic = () => {
+    //     if (isMicOn) {
+    //         stopMic();
+    //     } else {
+    //         startMic();
+    //     }
+    //     setIsMicOn(!isMicOn);
+    // };
+
+    const startMic = () => setIsMicOn(true);
+    const stopMic = () => setIsMicOn(false);
+    const toggleMic = () => setIsMicOn(prev => !prev);
 
 
 
