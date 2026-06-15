@@ -13,7 +13,7 @@ import InterviewReport from './pages/InterviewReport.jsx';
 
 
 
-export const ServerUrl = "http://localhost:8000"
+export const ServerUrl = "https://interview-agent-qkys.onrender.com"
 
 function App() {
 
