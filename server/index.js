@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+dotenv.config();
 import connectDb from './config/connectDb.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -8,11 +9,10 @@ import userRouter from './routes/user.route.js';
 import interviewRouter from './routes/interview.route.js';
 import paymentRouter from './routes/payment.route.js';
 
-dotenv.config();
 
 const app = express()
 app.use(cors({
-    origin: "https://interview-agent-client-8avc.onrender.com/",
+    origin: "https://interview-agent-client-8avc.onrender.com",
     credentials: true
 }));
 
